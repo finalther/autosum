@@ -2,18 +2,21 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Api extends CI_Controller {
-
+	
 	function index(){
 		$response['code'] 		= 200;
 		$response['error']		= FALSE;
 		$response['message']	= 'Success';
-		$response['result'] 	= "ini hasilnya";
+		$response['result'] 	= "ini echo index";
 		echo json_encode($response);
 	}
+
 	function hitung_knn(){
-		if ($this->input->server('REQUEST_METHOD') == 'POST'){
-		$teks 				 = $this->input->post('teks');		
-		$pilih_fitur		 = $this->input->post('pilih_fitur');
+		// if ($this->input->server('REQUEST_METHOD') == 'POST'){
+		// $teks 				 = $this->input->post('teks');		
+		// $pilih_fitur		 = $this->input->post('pilih_fitur');
+		$pilih_fitur		 = array('0','1','4');
+		$teks = file_get_contents("./assets/test_error.txt");
 		$hasil_segementasi   = $this->segmentasi($teks); //FIXED
 		$caseFolding 		 = $this->caseFolding($hasil_segementasi);// FIXED
 		$stopword 			 = $this->stopword($caseFolding); //FIXED
@@ -41,6 +44,9 @@ class Api extends CI_Controller {
 		$fitur4_uji			 = $this->fitur_4($extract_fitur);
 		$fitur5_uji 		 = $this->fitur_5($extract_fitur);
 		$fitur6_uji 		 = $this->fitur_6($extract_fitur);
+
+		// print_r($caseFolding);
+		// die();
 
 		$fitur1_latih		 = array();
 		$fitur2_latih		 = array();
@@ -85,7 +91,7 @@ class Api extends CI_Controller {
 
 						);
 				$x = 0;
-				foreach ($_POST['pilih_fitur'] as $key => $value) {
+				foreach ($pilih_fitur as $key => $value) {
 					$x = $x + $arr[$value]; //Akumulasi fitur yg dipilih
 				}
 
@@ -136,7 +142,7 @@ class Api extends CI_Controller {
 			}
 
 		// merge kalimat hasil segmentasi awal utk dibandingkan dengan hasil ringkasan
-		$pecah_arr = call_user_func_array('array_merge', $hasil_segementasi);
+		$pecah_arr = call_user_func_array('array_merge', $caseFolding);
 		$hasil_ringkasan = array(); //output kalimat ringkasan
     	foreach ($pecah_arr as $key2 => $value2) {
         	if(in_array($key2,$kalimat_ringkasan)){ //jika value $kalimat_ringkasan sama dengan $key2 hasil segmentasi awal maka
@@ -148,6 +154,7 @@ class Api extends CI_Controller {
 				$fixing[] = trim($hasil_ringkasan[$z]);
 		}
 			$fix_hasil = implode('. ', $fixing);
+			$fix_hasil.=".";
 
 			// JSON
 			$response['code'] 		= 200;
@@ -155,12 +162,12 @@ class Api extends CI_Controller {
 			$response['message']	= 'Success';
 			$response['result']		= $fix_hasil;
 			echo json_encode($response);
-		}else{
-			$response['code'] 		= 405;
-			$response['error']		= TRUE;
-			$response['message']	= 'Failed';
-			echo json_encode($response);
-		}
+		// }else{
+		// 	$response['code'] 		= 405;
+		// 	$response['error']		= TRUE;
+		// 	$response['message']	= 'Failed';
+		// 	echo json_encode($response);
+		// }
 		
 	}
 
@@ -197,20 +204,16 @@ class Api extends CI_Controller {
 				$data = preg_replace('/[^a-z^0-9^“”]/',' ',$data); //selain karakter a-z, 0-9 dan double quotes ganti spasi
 				$data = preg_replace("/ {2,}/", " ", $data); //remove double space
 				$data = trim($data); //remove white space krn dalam remove diatas masih ada space yg tersisa
-
-				array_push($data2 , $data);
+				array_push($data2 ,$data);
 			}
+			$data2 = array_filter($data2);
 			array_push($data_return,$data2);
 		}
-		return $data_return;
+		return array_filter($data_return);
 	}
 
 	function stopword($string)
 	{
-		$string = file_get_contents('./assets/tes/tes.txt');
-		$string = $this->segmentasi($string);
-		$string = $this->caseFolding($string); 
-
 		$data = array();
 		foreach ($string as $key => $value) { //Looping element pertama (paragraf)
 			$data2 = array();

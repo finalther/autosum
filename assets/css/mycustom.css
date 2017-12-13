@@ -135,15 +135,10 @@
 /*END LOADING*/
 
 
-
-body{
-    font-family: 'Lato', sans-serif;
-    font-weight: 400;
-}
-
-
 /*NAV BAR BRAND*/
-.navbar-default{
+
+.navbar-inverse{
+  font-family: 'Montserrat', sans-serif;
   border-radius: 0px;
   border :none;
 }
@@ -157,10 +152,12 @@ body{
   padding: 2px;
 }
 
-  textarea#teks{
+textarea#teks{
+  font-family: 'Montserrat', sans-serif;
   border-color: #ECECEC;
 }
   textarea.teks{
+  font-family: 'Montserrat', sans-serif;
   border-color: #ECECEC;
 }
 
@@ -177,13 +174,15 @@ textarea{
 }
 
 #footer {
+  font-family: 'Quicksand', sans-serif;
   position: fixed;
   right: 0;
   bottom: 0;
   left: 0;
   padding: 0.3em;
-  background-color: #efefef;
+  background-color: #222222;
   text-align: left;
+  color:white;
   border-bottom: 4px solid #3366FF;
   font-size: 12px;
 }
@@ -197,3 +196,27 @@ textarea:focus {
 }
 
 /*BUTTON */
+
+/*Font Style*/
+h1, h2, h3, h4 {
+  font-family: 'Quicksand', sans-serif;
+  margin-left: -2px;
+  color:#fff;
+}
+
+p{
+  font-family: 'Montserrat', sans-serif;
+  color: #8A9CA0;
+  font-weight: 400;
+}
+
+.blue{
+  color:#007FFF;
+}
+
+ul>li{
+    font-family: 'Montserrat', sans-serif;
+}
+tr>td{
+    font-family: 'Montserrat', sans-serif;
+}
