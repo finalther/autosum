@@ -12,11 +12,9 @@ class Api extends CI_Controller {
 	}
 
 	function hitung_knn(){
-		// if ($this->input->server('REQUEST_METHOD') == 'POST'){
-		// $teks 				 = $this->input->post('teks');		
-		// $pilih_fitur		 = $this->input->post('pilih_fitur');
-		$pilih_fitur		 = array('0','1','4');
-		$teks = file_get_contents("./assets/test_error.txt");
+		if ($this->input->server('REQUEST_METHOD') == 'POST'){
+		$teks 				 = $this->input->post('teks');		
+		$pilih_fitur		 = $this->input->post('pilih_fitur');
 		$hasil_segementasi   = $this->segmentasi($teks); //FIXED
 		$caseFolding 		 = $this->caseFolding($hasil_segementasi);// FIXED
 		$stopword 			 = $this->stopword($caseFolding); //FIXED
@@ -162,12 +160,12 @@ class Api extends CI_Controller {
 			$response['message']	= 'Success';
 			$response['result']		= $fix_hasil;
 			echo json_encode($response);
-		// }else{
-		// 	$response['code'] 		= 405;
-		// 	$response['error']		= TRUE;
-		// 	$response['message']	= 'Failed';
-		// 	echo json_encode($response);
-		// }
+		}else{
+			$response['code'] 		= 405;
+			$response['error']		= TRUE;
+			$response['message']	= 'Failed';
+			echo json_encode($response);
+		}
 		
 	}
 
