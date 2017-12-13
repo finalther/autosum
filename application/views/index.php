@@ -88,7 +88,7 @@
         var formdata=$("#formku").serialize();
         $.ajax({
         type:"POST",
-        url:"<?php echo site_url()?>index.php/Home/ringkas",
+        url:"<?php echo site_url()?>Home/ringkas",
         data: formdata,
         beforeSend:function(){
           $('#status').show();

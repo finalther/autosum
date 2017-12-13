@@ -16,6 +16,7 @@ class Home extends CI_Controller {
 	}
 
 	function ringkas(){
+		if ($this->input->server('REQUEST_METHOD') == 'POST'){
 			$teks 				 = $this->input->post('teks');		
 			$pilih_fitur		 = $this->input->post('pilih_fitur');
 
@@ -36,6 +37,9 @@ class Home extends CI_Controller {
 			$output = $output['result']; 
 			curl_close($ch);
 			echo $output;
+		}else{
+			echo "gagal";
+		}
 	}
 
 	function aboutApp(){
@@ -54,7 +58,7 @@ class Home extends CI_Controller {
 			//Url api yang akan menerima request 
 			$url = "http://www.carimakna.com/Api/hitung_knn";
 			$teks = file_get_contents("./assets/test_error.txt");
-			$pilih_fitur = array('0', '1', '2');
+			$pilih_fitur = array('0', '1', '4');
 			// Data yang akan dikirim
 			$data 		 = array(
 						'teks'			=> $teks,

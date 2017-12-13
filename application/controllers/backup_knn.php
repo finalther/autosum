@@ -3,7 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Api extends CI_Controller {
     
+	function index(){
+	    $data = $_POST['data'];
+// 		$response['code'] 		= 200;
+// 		$response['error']		= FALSE;
+// 		$response['message']	= 'Success';
+// 		$response['result'] 	= "ini echo index";
+		echo json_encode(array('hasil'=>$data));
+	}
+
 	function hitung_knn(){
+		if ($this->input->server('REQUEST_METHOD') == 'POST'){
 		$teks 				 = $this->input->post('teks');		
 		$pilih_fitur		 = $this->input->post('pilih_fitur');
 		$hasil_segementasi   = $this->segmentasi($teks); //FIXED
@@ -77,7 +87,7 @@ class Api extends CI_Controller {
 
 						);
 				$x = 0;
-				foreach ($pilih_fitur as $key => $value) {
+				foreach ($_POST['pilih_fitur'] as $key => $value) {
 					$x = $x + $arr[$value]; //Akumulasi fitur yg dipilih
 				}
 
@@ -148,6 +158,12 @@ class Api extends CI_Controller {
 			$response['message']	= 'Success';
 			$response['result']		= $fix_hasil;
 			echo json_encode($response);
+		}else{
+			$response['code'] 		= 405;
+			$response['error']		= TRUE;
+			$response['message']	= 'Failed';
+			echo json_encode($response);
+		}
 		
 	}
 
@@ -157,15 +173,15 @@ class Api extends CI_Controller {
 	{
 		$data 			= array();
 		$string			= trim($string);
-		$pecahparagraf 	= preg_replace('/[\r\n]+/', '\n', $string);
-		$pecahparagraf	= explode('\n',$pecahparagraf);
+		$pecahparagraf 	= preg_replace("/[\r\n]+/", "\n", $string);
+		$pecahparagraf	= explode("\n",$pecahparagraf);
 
 		foreach ($pecahparagraf as $key => $value) {
 			$regex 		  	= '/“[^“”]+”(*SKIP)(*FAIL)|\.\s]*/';// Prioritaskan tanda koma terbalik
 			// $pecah_titik 	= substr($value, 0, -1); // Ambil kalimat dari index-ke 0 sampai akhir kecuali 1 karakter terakhir
 			$pecah_titik 	= preg_split($regex, $value); //Pecah berdasarkan titik
-			$pecah_titik 	= preg_replace('/ {2,}/',' ', $pecah_titik); //hilangkan double space
-			$pecah_titik	= preg_replace('/[.]/',' ', $pecah_titik);//output tidak ada titik
+			$pecah_titik 	= preg_replace("/ {2,}/", " ", $pecah_titik); //hilangkan double space
+			$pecah_titik	= preg_replace("/[.]/", " ", $pecah_titik);//output tidak ada titik
 			$pecah_titik 	= array_filter($pecah_titik); //element kosong buang
 			$pecah_titik 	= array_values($pecah_titik); //reset index
 			array_push($data, $pecah_titik); //simpan ke variable data
@@ -182,7 +198,7 @@ class Api extends CI_Controller {
 			foreach ($value as $key => $value2) { //Looping element array ke 2(kalimat)
 				$data = strtolower($value2); // jadikan lowercase
 				$data = preg_replace('/[^a-z^0-9^“”]/',' ',$data); //selain karakter a-z, 0-9 dan double quotes ganti spasi
-				$data = preg_replace('/ {2,}/',' ', $data); //remove double space
+				$data = preg_replace("/ {2,}/", " ", $data); //remove double space
 				$data = trim($data); //remove white space krn dalam remove diatas masih ada space yg tersisa
 
 				array_push($data2 , $data);
