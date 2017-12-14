@@ -54,7 +54,7 @@ class Home extends CI_Controller {
 		$this->load->view('footer');			
 	}
 
-	function test_Api(){
+	function test_post(){
 			//Url api yang akan menerima request 
 			$url = "http://www.carimakna.com/Api/hitung_knn";
 			$teks = file_get_contents("./assets/test_error.txt");
@@ -101,8 +101,7 @@ class Home extends CI_Controller {
 
 	function test_get(){
 		// Get cURL resource
-		// $url = "http://www.carimakna.com/Api/index";
-		$url = "https://www.google.co.id/?gws_rd=cr&dcr=0&ei=FKcwWv3dGsTUvATU3Km4BA";
+		$url = "https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=c45c412021ed4711b4a11396a29da34f";
 		$curl = curl_init();
 		$proxy = '192.168.160.239:800';	
 		curl_setopt($curl, CURLOPT_URL ,$url);
@@ -114,7 +113,17 @@ class Home extends CI_Controller {
 		if($output === FALSE ){
 			echo "curl error : " . curl_error($curl);
 		}
-		curl_close($curl);
-		print_r($output);
+		curl_close($curl);	
+		$content = json_decode($output, true);
+		// $content = $content['articles'][0]['source']['id'];
+		$total    = $content['totalResults'];
+		$articles = $content['articles'];
+
+		$data['content'] = $articles;
+
+		$this->load->view('header');
+		$this->load->view('v_Api', $data);
+		$this->load->view('footer');
+
 	}
 }
